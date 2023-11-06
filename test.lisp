@@ -133,13 +133,13 @@
   (write-log "~a, ~a" "hello" "world"))
 
 (test-case string-starts-with
-  (assert (eq (string-starts-with "" "") t))
-  (assert (eq (string-starts-with "foo" "foo") t))
-  (assert (eq (string-starts-with "foo" "foobar") t))
-  (assert (eq (string-starts-with "foo" "bazfoobar") nil))
-  (assert (eq (string-starts-with "foo" "fo") nil))
-  (assert (eq (string-starts-with "foo" "fox") nil))
-  (assert (eq (string-starts-with "foo" "foO") nil)))
+  (assert (string-starts-with "" ""))
+  (assert (string-starts-with "foo" "foo"))
+  (assert (string-starts-with "foo" "foobar"))
+  (assert (not (string-starts-with "foo" "bazfoobar")))
+  (assert (not (string-starts-with "foo" "fo")))
+  (assert (not (string-starts-with "foo" "fox")))
+  (assert (not (string-starts-with "foo" "foO"))))
 
 (test-case string-replace-single
   (assert (string= (string-replace "foo" "foo" "foo") "foo"))
