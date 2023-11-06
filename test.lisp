@@ -186,27 +186,14 @@
   (assert (string= (fix-lines (format nil "foo~%")) (format nil "foo~%"))))
 
 (test-case weekday-name
-  (assert (string= (weekday-name 0) "Mon"))
-  (assert (string= (weekday-name 1) "Tue"))
-  (assert (string= (weekday-name 2) "Wed"))
-  (assert (string= (weekday-name 3) "Thu"))
-  (assert (string= (weekday-name 4) "Fri"))
-  (assert (string= (weekday-name 5) "Sat"))
-  (assert (string= (weekday-name 6) "Sun")))
+  (let ((weekdayLookups (map 'list #'weekday-name (list 0 1 2 3 4 5 6)))
+        (weekdays (list "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun")))
+    (assert (equal weekdayLookups weekdays))))
 
 (test-case month-name
-  (assert (string= (month-name 1) "Jan"))
-  (assert (string= (month-name 2) "Feb"))
-  (assert (string= (month-name 3) "Mar"))
-  (assert (string= (month-name 4) "Apr"))
-  (assert (string= (month-name 5) "May"))
-  (assert (string= (month-name 6) "Jun"))
-  (assert (string= (month-name 7) "Jul"))
-  (assert (string= (month-name 8) "Aug"))
-  (assert (string= (month-name 9) "Sep"))
-  (assert (string= (month-name 10) "Oct"))
-  (assert (string= (month-name 11) "Nov"))
-  (assert (string= (month-name 12) "Dec")))
+  (let ((months (list "Jan" "Feb" "Mar" "Apr" "May" "Jun" "Jul" "Aug" "Sep" "Oct" "Nov" "Dec"))
+       (monthLookups (map 'list #'month-name (list 1 2 3 4 5 6 7 8 9 10 11 12))))
+    (assert (equal monthLookups months))))
 
 (test-case decode-weekday-name
   (assert (string= (decode-weekday-name 2019 01 07) "Mon"))
