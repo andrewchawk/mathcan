@@ -133,13 +133,25 @@
   (write-log "~a, ~a" "hello" "world"))
 
 (test-case string-starts-with
-  (assert (string-starts-with "" ""))
-  (assert (string-starts-with "foo" "foo"))
-  (assert (string-starts-with "foo" "foobar"))
-  (assert (not (string-starts-with "foo" "bazfoobar")))
-  (assert (not (string-starts-with "foo" "fo")))
-  (assert (not (string-starts-with "foo" "fox")))
-  (assert (not (string-starts-with "foo" "foO"))))
+  ;; The formatting might be a bit grody, but at least adding more test cases is
+  ;; trivial.
+  (let ((startsWith (list (list "" "")
+                          (list "foo" "foo" "foobar")))
+        (doesNotStartWith (list (list "bazfoobar" "foo" "fo" "fox" "foO"))))
+
+    (assert (every
+      (lambda (m) (every
+        (lambda (matchingWord)
+          (string-starts-with (car m) matchingWord))
+        (cdr m)))
+      startsWith))
+
+    (assert (every
+      (lambda (d) (notany
+        (lambda (nonMatchingWord)
+          (string-starts-with (car d) nonMatchingWord))
+        (cdr d)))
+      doesNotStartWith))))
 
 (test-case string-replace-single
   (assert (string= (string-replace "foo" "foo" "foo") "foo"))
