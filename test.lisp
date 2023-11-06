@@ -154,11 +154,16 @@
       doesNotStartWith))))
 
 (test-case string-replace-single
-  (assert (string= (string-replace "foo" "foo" "foo") "foo"))
-  (assert (string= (string-replace "foo" "bar" "") ""))
-  (assert (string= (string-replace "foo" "bar" "foo") "bar"))
-  (assert (string= (string-replace "foo" "bar" "foofoo") "barbar"))
-  (assert (string= (string-replace "foo" "bar" "foo foo") "bar bar")))
+  (let ((replaceEqualities (list
+           (list "foo" "foo" "foo" "foo")
+           (list "foo" "bar" "" "")
+           (list "foo" "bar" "foo" "bar")
+           (list "foo" "bar" "foofoo" "barbar")
+           (list "foo" "bar" "foo foo" "bar bar"))))
+    (assert (every
+      (lambda (e)
+        (string= (apply #'string-replace (subseq e 0 3)) (nth 3 e)))
+      replaceEqualities))))
 
 (test-case string-replace-multiple
   (assert (string= (string-replace "foo" "x" "foo:foo") "x:x"))
