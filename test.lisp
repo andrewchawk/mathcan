@@ -143,19 +143,14 @@
         (doesNotStartWith (list
           (list "bazfoobar" "foo" "fo" "fox" "foO"))))
 
-    (assert (every
-      (lambda (m) (every
-        (lambda (matchingWord)
-          (string-starts-with (car m) matchingWord))
-        (cdr m)))
-      startsWith))
+    (defun isCorrect (x)
+      (every (lambda (word) (string-starts-with (car x) word)) (cdr x)))
 
-    (assert (every
-      (lambda (d) (notany
-        (lambda (nonMatchingWord)
-          (string-starts-with (car d) nonMatchingWord))
-        (cdr d)))
-      doesNotStartWith))))
+    (defun isMangled (x)
+      (notany (lambda (word) (string-starts-with (car x) word)) (cdr x)))
+
+    (assert (every #'isCorrect startsWith))
+    (assert (every #'isMangled doesNotStartWith))))
 
 (test-case string-replace
   (let ((replaceEqualities (list
