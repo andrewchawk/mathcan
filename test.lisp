@@ -260,20 +260,24 @@
   (assert (not (meta-request-p (make-mock-request :post "/123")))))
 
 (test-case math-request-p
-  (assert (math-request-p (make-mock-request :get "/1")))
-  (assert (math-request-p (make-mock-request :head "/1")))
-  (assert (math-request-p (make-mock-request :get "/123")))
-  (assert (math-request-p (make-mock-request :head "/123")))
-  (assert (not (math-request-p (make-mock-request :post "/123"))))
-  (assert (not (math-request-p (make-mock-request :get "/"))))
-  (assert (not (math-request-p (make-mock-request :head "/"))))
-  (assert (not (math-request-p (make-mock-request :post "/"))))
-  (assert (not (math-request-p (make-mock-request :get "/0"))))
-  (assert (not (math-request-p (make-mock-request :head "/0"))))
-  (assert (not (math-request-p (make-mock-request :post "/0"))))
-  (assert (not (math-request-p (make-mock-request :get "/-1"))))
-  (assert (not (math-request-p (make-mock-request :head "/-1"))))
-  (assert (not (math-request-p (make-mock-request :post "/-1")))))
+
+  (defun cartProd (x y)
+    (reduce #'append
+      (mapcar (lambda (x2)
+                (mapcar (lambda (y2)
+                          (list x2 y2))
+                        y))
+              x)))
+
+  (defun map2 (f x y) (mapcar (lambda (x) (apply f x)) (cartProd x y)))
+
+  (defun request-with (f methods pages)
+    (map2 (lambda (m p)
+            (assert (funcall f (math-request-p (make-mock-request m p)))))
+          methods pages))
+
+  (request-with #'identity (list :get :head) (list "/1" "/123"))
+  (request-with #'not (list :post :get :head) (list "/" "/0" "/-1")))
 
 (test-case post-request-p
   (assert (post-request-p (make-mock-request :post "/")))
