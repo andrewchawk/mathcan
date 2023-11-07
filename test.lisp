@@ -198,13 +198,20 @@
     (assert (equal monthLookups months))))
 
 (test-case decode-weekday-name
-  (assert (string= (decode-weekday-name 2019 01 07) "Mon"))
-  (assert (string= (decode-weekday-name 2019 03 05) "Tue"))
-  (assert (string= (decode-weekday-name 2020 01 01) "Wed"))
-  (assert (string= (decode-weekday-name 2020 02 27) "Thu"))
-  (assert (string= (decode-weekday-name 2020 02 28) "Fri"))
-  (assert (string= (decode-weekday-name 2020 02 29) "Sat"))
-  (assert (string= (decode-weekday-name 2020 03 01) "Sun")))
+  (let ((daySequences (list
+          (list "Mon" 2019 01 07)
+          (list "Tue" 2019 03 05)
+          (list "Wed" 2020 01 01)
+          (list "Thu" 2020 02 27)
+          (list "Fri" 2020 02 28)
+          (list "Sat" 2020 02 29)
+          (list "Sun" 2020 03 01))))
+
+    (defun isCorrect (daySequence)
+      (string= (car daySequence)
+               (apply #'decode-weekday-name (cdr daySequence))))
+
+    (mapcar (lambda (x) (assert (isCorrect x))) daySequences)))
 
 (test-case simple-date
   (assert (string= (simple-date "2012-03-25 00:00:00 +0000")
