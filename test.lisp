@@ -274,9 +274,9 @@
   (assert (not (math-request-p (make-mock-request :post "/-1")))))
 
 (test-case post-request-p
+  (assert (post-request-p (make-mock-request :post "/")))
   (assert (not (post-request-p (make-mock-request :get "/"))))
   (assert (not (post-request-p (make-mock-request :head "/"))))
-  (assert (post-request-p (make-mock-request :post "/")))
   (assert (not (post-request-p (make-mock-request :get "/foo"))))
   (assert (not (post-request-p (make-mock-request :head "/foo"))))
   (assert (not (post-request-p (make-mock-request :post "/foo")))))
