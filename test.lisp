@@ -160,15 +160,15 @@
 (test-case string-replace
   (let ((replaceEqualities (list
            (list "foo" "foo" "foo" "foo")
-           (list "foo" "bar" "" "")
-           (list "foo" "bar" "foo" "bar")
-           (list "foo" "bar" "foofoo" "barbar")
-           (list "foo" "bar" "foo foo" "bar bar")
-           (list "foo" "x" "foo:foo" "x:x")
-           (list "foo" "x" "foo:foo:" "x:x:"))))
+           (list "" "foo" "bar" "")
+           (list "bar" "foo" "bar" "foo")
+           (list "barbar" "foo" "bar" "foofoo")
+           (list "bar bar" "foo" "bar" "foo foo")
+           (list "x:x" "foo" "x" "foo:foo")
+           (list "x:x:" "foo" "x" "foo:foo:"))))
     (assert (every
       (lambda (e)
-        (string= (apply #'string-replace (subseq e 0 3)) (nth 3 e)))
+        (string= (apply #'string-replace (cdr e)) (car e)))
       replaceEqualities))))
 
 (test-case string-trim-whitespace
