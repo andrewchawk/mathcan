@@ -135,9 +135,11 @@
 (test-case string-starts-with
   ;; The formatting might be a bit grody, but at least adding more test cases is
   ;; trivial.
-  (let ((startsWith (list (list "" "")
-                          (list "foo" "foo" "foobar")))
-        (doesNotStartWith (list (list "bazfoobar" "foo" "fo" "fox" "foO"))))
+  (let ((startsWith (list
+          (list "" "")
+          (list "foo" "foo" "foobar")))
+        (doesNotStartWith (list
+          (list "bazfoobar" "foo" "fo" "fox" "foO"))))
 
     (assert (every
       (lambda (m) (every
