@@ -237,55 +237,50 @@
 ;;; Test Cases for Tool Definitions
 ;;; -------------------------------
 
+(defun cartProd (x y)
+  "The output is the cartesian product of the input lists."
+  (reduce #'append
+    (mapcar (lambda (x2)
+              (mapcar (lambda (y2)
+                        (list x2 y2))
+                      y))
+            x)))
+
+(defun map2 (f x y) (mapcar (lambda (x) (apply f x)) (cartProd x y)))
+
+(defun request-with (f methods pages)
+  "request-with is a reasonably cheap method of reducing the amount of
+   boilerplate, repetition, and number of lines within this section."
+  (map2 (lambda (m p)
+          (assert (funcall f (make-mock-request m p))))
+        methods pages))
+
 (test-case home-request-p
-  (assert (home-request-p (make-mock-request :get "/")))
-  (assert (home-request-p (make-mock-request :head "/")))
   (assert (not (home-request-p (make-mock-request :post "/"))))
-  (assert (not (home-request-p (make-mock-request :get "/foo"))))
-  (assert (not (home-request-p (make-mock-request :head "/foo"))))
-  (assert (not (home-request-p (make-mock-request :post "/foo")))))
+  (request-with #'home-request-p (list :get :head) (list "/"))
+  (request-with (lambda (x) (not (home-request-p x)))
+                (list :get :head :post)
+                (list "/foo")))
 
 (test-case meta-request-p
-  (assert (meta-request-p (make-mock-request :get "/0")))
-  (assert (meta-request-p (make-mock-request :head "/0")))
   (assert (not (meta-request-p (make-mock-request :post "/0"))))
-  (assert (not (meta-request-p (make-mock-request :get "/"))))
-  (assert (not (meta-request-p (make-mock-request :head "/"))))
-  (assert (not (meta-request-p (make-mock-request :post "/"))))
-  (assert (not (meta-request-p (make-mock-request :get "/-1"))))
-  (assert (not (meta-request-p (make-mock-request :head "/-1"))))
-  (assert (not (meta-request-p (make-mock-request :post "/-1"))))
-  (assert (not (meta-request-p (make-mock-request :get "/123"))))
-  (assert (not (meta-request-p (make-mock-request :post "/123"))))
-  (assert (not (meta-request-p (make-mock-request :post "/123")))))
+  (request-with #'meta-request-p (list :get :head) (list "/0"))
+  (request-with (lambda (x) (not (meta-request-p x)))
+                (list :post :get :head)
+                (list "/" "/-1" "/123")))
 
 (test-case math-request-p
-
-  (defun cartProd (x y)
-    (reduce #'append
-      (mapcar (lambda (x2)
-                (mapcar (lambda (y2)
-                          (list x2 y2))
-                        y))
-              x)))
-
-  (defun map2 (f x y) (mapcar (lambda (x) (apply f x)) (cartProd x y)))
-
-  (defun request-with (f methods pages)
-    (map2 (lambda (m p)
-            (assert (funcall f (math-request-p (make-mock-request m p)))))
-          methods pages))
-
-  (request-with #'identity (list :get :head) (list "/1" "/123"))
-  (request-with #'not (list :post :get :head) (list "/" "/0" "/-1")))
+  (request-with #'math-request-p (list :get :head) (list "/1" "/123"))
+  (request-with (lambda (x) (not (math-request-p x)))
+                (list :post :get :head)
+                (list "/" "/0" "/-1")))
 
 (test-case post-request-p
   (assert (post-request-p (make-mock-request :post "/")))
-  (assert (not (post-request-p (make-mock-request :get "/"))))
-  (assert (not (post-request-p (make-mock-request :head "/"))))
-  (assert (not (post-request-p (make-mock-request :get "/foo"))))
-  (assert (not (post-request-p (make-mock-request :head "/foo"))))
-  (assert (not (post-request-p (make-mock-request :post "/foo")))))
+  (assert (not (post-request-p (make-mock-request :post "/foo"))))
+  (request-with (lambda (x) (not (post-request-p x)))
+                (list :get :head)
+                (list "/" "/foo")))
 
 (test-case slug-to-path
   (assert (string= (slug-to-path "/x/" 1) "/x/post/0/0/1.txt"))
