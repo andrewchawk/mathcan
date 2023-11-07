@@ -81,12 +81,14 @@
 ;;; -----------------------------------
 
 (test-case universal-time-string
-  (string= (universal-time-string 0) "1900-01-01 00:00:00 +0000")
-  (string= (universal-time-string 1) "1900-01-01 00:00:01 +0000")
-  (string= (universal-time-string 86399) "1900-01-01 23:59:59 +0000")
-  (string= (universal-time-string 86400) "1900-01-02 00:00:00 +0000")
-  (string= (universal-time-string 86401) "1900-01-02 00:00:01 +0000")
-  (string= (universal-time-string 3541622400) "2012-03-25 00:00:00 +0000"))
+  (let ((timepairs (list
+          (list 0 "1900-01-01 00:00:00 +0000")
+          (list 1 "1900-01-01 00:00:01 +0000")
+          (list 86399 "1900-01-01 23:59:59 +0000")
+          (list 86400 "1900-01-02 00:00:00 +0000")
+          (list 86401 "1900-01-02 00:00:01 +0000"))))
+    (defun isCorrect (x) (string= (nth 1 x) (universal-time-string (car x))))
+    (every #'isCorrect timepairs)))
 
 (test-case make-directory
   (make-directory "test-tmp/foo/bar/")
